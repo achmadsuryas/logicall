@@ -13,7 +13,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Custom Style Sheet -->
-    <link rel="stylesheet" href="style.css?v=1.4.0">
+    <link rel="stylesheet" href="style.css?v=1.5.0">
     
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -404,49 +404,12 @@
 
 
 
-    <!-- 3. ABOUT / INFORMATION MODAL -->
-    <div id="about-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300">
-        <div class="w-full max-w-md glass-panel rounded-2xl p-6 border border-gray-800/80 transform scale-95 transition-all duration-300 shadow-2xl flex flex-col">
-            
-            <div class="flex items-center justify-between border-b border-gray-800 pb-3 mb-4">
-                <h3 class="text-lg font-bold text-white tracking-tight flex items-center gap-2">
-                    <i class="fa-solid fa-circle-info text-brandPurple"></i> Tentang Logicall
-                </h3>
-                <button onclick="toggleAboutModal()" class="text-gray-500 hover:text-white transition">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-            
-            <div class="text-xs text-gray-400 space-y-4 leading-relaxed overflow-y-auto max-h-[300px] pr-1">
-                <p>
-                    <strong>Logicall</strong> adalah portal game asah otak minimalis modern yang didesain untuk kenyamanan melatih fokus dan logika Anda. Terinspirasi dari konsep Friv Grid klasik, portal ini menghadirkan transisi game yang mulus dalam tampilan visual bernuansa gaming modern.
-                </p>
-                <div>
-                    <h4 class="font-bold text-gray-300 mb-1 uppercase text-[10px] tracking-wider text-brandPurple">Daftar Game Tersedia:</h4>
-                    <ul class="list-disc list-inside space-y-1.5 pl-1">
-                        <li><strong class="text-white">Sudoku Pro</strong>: Game utama yang dapat Anda mainkan secara penuh hari ini. Lengkap dengan generator tingkat kesulitan, fitur notes (catatan pensil), hint cerdas, serta tumpukan Undo/Redo tak terbatas.</li>
-                        <li><strong class="text-white">Koleksi Game Klasik (Coming Soon)</strong>: Mainkan game-game legendaris yang mendidik dan menantang seperti Tic Tac Toe, Snake, Chess (Catur), Minesweeper, Wordle, Tetris (Block Puzzle), Pac-Man, 2048, Memory Match, Pinball, dan Brick Breaker di masa mendatang.</li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-bold text-gray-300 mb-1 uppercase text-[10px] tracking-wider text-brandPurple">Fitur Unggulan Portal:</h4>
-                    <ul class="list-disc list-inside space-y-1.5 pl-1">
-                        <li><strong class="text-white">Auto-Save Record</strong>: Catatan waktu terbaik (Best Time) Anda disimpan secara aman di browser lokal (`localStorage`).</li>
-                        <li><strong class="text-white">Responsive Layout</strong>: Tampilan antarmuka fleksibel yang nyaman dimainkan baik di layar handphone (HP) maupun komputer meja (Desktop).</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <button onclick="toggleAboutModal()" class="w-full mt-6 py-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 border border-gray-700/60 text-white font-bold text-xs tracking-wider transition uppercase shadow-md">
-                Mengerti
-            </button>
-        </div>
-    </div>
+
 
     <!-- Hidden Input for mobile keyboard trigger -->
     <input type="text" id="mobile-input-trigger" inputmode="numeric" pattern="[1-9]*" class="absolute opacity-0 w-0 h-0 pointer-events-none">
 
     <!-- JS Application Logic -->
-    <script src="app.js?v=1.4.0"></script>
+    <script src="app.js?v=1.5.0"></script>
 </body>
 </html>

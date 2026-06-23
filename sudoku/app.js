@@ -72,8 +72,7 @@ const winDifficulty = document.getElementById('win-difficulty');
 const winTime = document.getElementById('win-time');
 const newRecordBanner = document.getElementById('new-record-banner');
 
-// About Modal Elements
-const aboutModal = document.getElementById('about-modal');
+
 
 // Game Over Modal Elements
 const gameOverModal = document.getElementById('game-over-modal');
@@ -233,12 +232,17 @@ function hideComingSoon() {
 
 // About Modal Control
 function toggleAboutModal() {
-    const isHidden = aboutModal.classList.contains('hidden') || aboutModal.classList.contains('opacity-0');
-    if (isHidden) {
-        openModal(aboutModal);
-    } else {
-        closeModal(aboutModal);
-    }
+    Swal.fire({
+        background: '#0f1623', color: '#e5e7eb', confirmButtonColor: '#8b5cf6',
+        title: '<i class="fa-solid fa-circle-info" style="color:#8b5cf6;margin-right:6px"></i>Tentang Logicall',
+        html: `
+            <div style="text-align:left;font-size:0.82rem;color:#9ca3af;line-height:1.8">
+                <p><strong style="color:#fff">Logicall</strong> adalah portal game asah otak minimalis modern, terinspirasi dari konsep Friv Grid klasik.</p>
+                <p style="margin-top:10px">Mainkan <strong style="color:#a78bfa">Sudoku Pro</strong> dan <strong style="color:#10b981">Wordle Indonesia</strong> secara solo atau multiplayer bersama teman secara realtime.</p>
+            </div>`,
+        confirmButtonText: 'Mengerti',
+        width: 400,
+    });
 }
 
 // --- SUDOKU ENGINE (SOLVER & GENERATOR) ---

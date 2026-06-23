@@ -15,6 +15,32 @@ const swalDark = {
     confirmButtonColor: '#8b5cf6',
     cancelButtonColor: '#374151',
 };
+// ─── Auto-Refresh Lobby Timer ──────────────────────────────────────────────
+let lobbyRefreshSeconds = 10;
+let lobbyRefreshInterval = null;
+
+function startLobbyAutoRefresh() {
+    if (lobbyRefreshInterval) clearInterval(lobbyRefreshInterval);
+    
+    lobbyRefreshSeconds = 10;
+    updateRefreshCountdownUI();
+    
+    lobbyRefreshInterval = setInterval(() => {
+        lobbyRefreshSeconds--;
+        if (lobbyRefreshSeconds <= 0) {
+            refreshLobby();
+            lobbyRefreshSeconds = 10;
+        }
+        updateRefreshCountdownUI();
+    }, 1000);
+}
+
+function updateRefreshCountdownUI() {
+    const el = document.getElementById('lobby-refresh-countdown');
+    if (el) {
+        el.textContent = `⟳ ${lobbyRefreshSeconds}s`;
+    }
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     const savedName = localStorage.getItem('logicall_username');
@@ -27,6 +53,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const nameInput = document.getElementById('global-username-input');
     if (nameInput) nameInput.value = myUsername;
     setupLobby();
+    
+    // Start auto-refresh countdown
+    startLobbyAutoRefresh();
 
     // Show cache-clear guide the first time a user opens the site
     if (!localStorage.getItem('logicall_cache_notice_shown')) {
@@ -90,6 +119,10 @@ function refreshLobby() {
         supabaseClient.removeChannel(lobbyChannel);
         lobbyChannel = null;
     }
+
+    // Reset countdown seconds back to 10 when manually triggered
+    lobbyRefreshSeconds = 10;
+    updateRefreshCountdownUI();
 
     setTimeout(() => {
         setupLobby();
