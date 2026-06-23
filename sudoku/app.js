@@ -2130,7 +2130,7 @@ function shareRoomToLobby() {
                 game: 'sudoku',
                 hostName: myUsername,
                 playerCount: roomPlayers.length || 1,
-                maxPlayers: 5,
+                maxPlayers: roomMaxPlayers,
                 updatedAt: new Date().toISOString()
             });
 
