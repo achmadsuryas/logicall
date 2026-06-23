@@ -27,6 +27,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const nameInput = document.getElementById('global-username-input');
     if (nameInput) nameInput.value = myUsername;
     setupLobby();
+
+    // Show cache-clear guide the first time a user opens the site
+    if (!localStorage.getItem('logicall_cache_notice_shown')) {
+        setTimeout(showCacheNotif, 1200);
+    }
 });
 
 function changeUsername(value) {
@@ -44,23 +49,53 @@ function changeUsername(value) {
     }
 }
 
-function triggerHardReload() {
+// ─── Cache Notification (first visit) ─────────────────────────────────────
+function showCacheNotif() {
     Swal.fire({
         ...swalDark,
-        title: 'Reset Semua Data?',
-        html: 'Ini akan menghapus semua <b>rekor</b> dan <b>nama pengguna</b>. Lanjutkan?',
-        icon: 'warning',
-        iconColor: '#f59e0b',
-        showCancelButton: true,
-        confirmButtonText: '<i class="fa-solid fa-trash"></i>&nbsp;Ya, Reset',
-        cancelButtonText: 'Batal',
-        reverseButtons: true,
-    }).then(result => {
-        if (result.isConfirmed) {
-            localStorage.clear();
-            window.location.reload();
-        }
+        title: '⚡ Tips: Selalu Tampilan Terbaru',
+        html: `
+            <div style="text-align:left;font-size:0.8rem;color:#9ca3af;line-height:1.7">
+                <p style="margin-bottom:10px">Jika tampilan terlihat <b style="color:#f3f4f6">tidak update</b>, hapus cache browser dulu:</p>
+                <div style="background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.2);border-radius:10px;padding:10px 14px;margin-bottom:10px">
+                    <p style="font-size:0.72rem;font-weight:800;color:#a78bfa;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">🖥️ Chrome / Edge (PC)</p>
+                    <p style="margin:0">Tekan <kbd style="background:#1e293b;border:1px solid #475569;padding:1px 6px;border-radius:4px;font-family:monospace">Ctrl</kbd> + <kbd style="background:#1e293b;border:1px solid #475569;padding:1px 6px;border-radius:4px;font-family:monospace">Shift</kbd> + <kbd style="background:#1e293b;border:1px solid #475569;padding:1px 6px;border-radius:4px;font-family:monospace">Del</kbd> → pilih <b style="color:#f3f4f6">Cached images and files</b> → klik <b style="color:#10b981">Clear data</b></p>
+                </div>
+                <div style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.15);border-radius:10px;padding:10px 14px;margin-bottom:10px">
+                    <p style="font-size:0.72rem;font-weight:800;color:#34d399;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">📱 Chrome (HP Android)</p>
+                    <p style="margin:0">Buka <b style="color:#f3f4f6">⋮ → Setelan → Privasi → Hapus data browser</b> → centang <b style="color:#f3f4f6">Gambar & file dalam cache</b> → Hapus</p>
+                </div>
+                <div style="background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.15);border-radius:10px;padding:10px 14px">
+                    <p style="font-size:0.72rem;font-weight:800;color:#818cf8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">🔄 Cara Cepat (Hard Refresh)</p>
+                    <p style="margin:0">Tekan <kbd style="background:#1e293b;border:1px solid #475569;padding:1px 6px;border-radius:4px;font-family:monospace">Ctrl</kbd> + <kbd style="background:#1e293b;border:1px solid #475569;padding:1px 6px;border-radius:4px;font-family:monospace">Shift</kbd> + <kbd style="background:#1e293b;border:1px solid #475569;padding:1px 6px;border-radius:4px;font-family:monospace">R</kbd> — langsung reload tanpa cache!</p>
+                </div>
+            </div>`,
+        confirmButtonText: '✅ Mengerti!',
+        width: 480,
+        showCloseButton: true,
+    }).then(() => {
+        localStorage.setItem('logicall_cache_notice_shown', '1');
     });
+}
+
+// ─── Refresh Lobby Room List ────────────────────────────────────────────────
+function refreshLobby() {
+    const icon = document.getElementById('refresh-lobby-icon');
+    const btn  = document.getElementById('btn-refresh-lobby');
+    if (btn) { btn.disabled = true; }
+    if (icon) { icon.classList.add('animate-spin'); }
+
+    // Re-subscribe: unsubscribe and re-setup the lobby channel
+    if (lobbyChannel) {
+        supabaseClient.removeChannel(lobbyChannel);
+        lobbyChannel = null;
+    }
+
+    setTimeout(() => {
+        setupLobby();
+        if (icon) { icon.classList.remove('animate-spin'); }
+        if (btn)  { btn.disabled = false; }
+    }, 900);
 }
 
 function setupLobby() {
