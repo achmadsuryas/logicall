@@ -53,24 +53,24 @@ function changeUsername(value) {
 function showCacheNotif() {
     Swal.fire({
         ...swalDark,
-        title: '⚡ Tips: Selalu Tampilan Terbaru',
+        title: 'Tips: Selalu Tampilan Terbaru',
         html: `
             <div style="text-align:left;font-size:0.8rem;color:#9ca3af;line-height:1.7">
                 <p style="margin-bottom:10px">Jika tampilan terlihat <b style="color:#f3f4f6">tidak update</b>, hapus cache browser dulu:</p>
                 <div style="background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.2);border-radius:10px;padding:10px 14px;margin-bottom:10px">
-                    <p style="font-size:0.72rem;font-weight:800;color:#a78bfa;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">🖥️ Chrome / Edge (PC)</p>
+                    <p style="font-size:0.72rem;font-weight:800;color:#a78bfa;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Chrome / Edge (PC)</p>
                     <p style="margin:0">Tekan <kbd style="background:#1e293b;border:1px solid #475569;padding:1px 6px;border-radius:4px;font-family:monospace">Ctrl</kbd> + <kbd style="background:#1e293b;border:1px solid #475569;padding:1px 6px;border-radius:4px;font-family:monospace">Shift</kbd> + <kbd style="background:#1e293b;border:1px solid #475569;padding:1px 6px;border-radius:4px;font-family:monospace">Del</kbd> → pilih <b style="color:#f3f4f6">Cached images and files</b> → klik <b style="color:#10b981">Clear data</b></p>
                 </div>
                 <div style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.15);border-radius:10px;padding:10px 14px;margin-bottom:10px">
-                    <p style="font-size:0.72rem;font-weight:800;color:#34d399;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">📱 Chrome (HP Android)</p>
+                    <p style="font-size:0.72rem;font-weight:800;color:#34d399;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Chrome (HP Android)</p>
                     <p style="margin:0">Buka <b style="color:#f3f4f6">⋮ → Setelan → Privasi → Hapus data browser</b> → centang <b style="color:#f3f4f6">Gambar & file dalam cache</b> → Hapus</p>
                 </div>
                 <div style="background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.15);border-radius:10px;padding:10px 14px">
-                    <p style="font-size:0.72rem;font-weight:800;color:#818cf8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">🔄 Cara Cepat (Hard Refresh)</p>
+                    <p style="font-size:0.72rem;font-weight:800;color:#818cf8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Cara Cepat (Hard Refresh)</p>
                     <p style="margin:0">Tekan <kbd style="background:#1e293b;border:1px solid #475569;padding:1px 6px;border-radius:4px;font-family:monospace">Ctrl</kbd> + <kbd style="background:#1e293b;border:1px solid #475569;padding:1px 6px;border-radius:4px;font-family:monospace">Shift</kbd> + <kbd style="background:#1e293b;border:1px solid #475569;padding:1px 6px;border-radius:4px;font-family:monospace">R</kbd> — langsung reload tanpa cache!</p>
                 </div>
             </div>`,
-        confirmButtonText: '✅ Mengerti!',
+        confirmButtonText: 'Mengerti!',
         width: 480,
         showCloseButton: true,
     }).then(() => {
@@ -224,31 +224,21 @@ function toggleAboutModal() {
         ...swalDark,
         title: '<i class="fa-solid fa-circle-info" style="color:#8b5cf6;margin-right:6px"></i>Tentang Logicall',
         html: `
-            <div style="text-align:left;font-size:0.78rem;color:#9ca3af;line-height:1.7">
-                <p style="margin-bottom:12px"><strong style="color:#fff">Logicall</strong> adalah portal game asah otak minimalis modern, terinspirasi dari konsep Friv Grid klasik.</p>
-                <p style="font-size:0.68rem;font-weight:700;letter-spacing:.08em;color:#8b5cf6;text-transform:uppercase;margin-bottom:6px">🎮 Game Tersedia</p>
-                <ul style="list-style:disc;padding-left:1.2em;margin-bottom:12px">
-                    <li style="margin-bottom:5px"><strong style="color:#fff">Sudoku Pro</strong> — Tingkat kesulitan, Notes, Hint, Multiplayer co-op</li>
-                    <li><strong style="color:#fff">Wordle Indonesia</strong> — Tebak kata 5 huruf, statistik, keyboard virtual</li>
-                </ul>
-                <p style="font-size:0.68rem;font-weight:700;letter-spacing:.08em;color:#8b5cf6;text-transform:uppercase;margin-bottom:6px">✨ Fitur Portal</p>
-                <ul style="list-style:disc;padding-left:1.2em">
-                    <li style="margin-bottom:5px"><strong style="color:#fff">Auto-Save</strong> — Waktu terbaik disimpan di localStorage</li>
-                    <li style="margin-bottom:5px"><strong style="color:#fff">Responsive</strong> — Nyaman di HP maupun Desktop</li>
-                    <li><strong style="color:#fff">Lobby Realtime</strong> — Bagikan &amp; bergabung room multiplayer</li>
-                </ul>
+            <div style="text-align:left;font-size:0.82rem;color:#9ca3af;line-height:1.8">
+                <p><strong style="color:#fff">Logicall</strong> adalah portal game asah otak minimalis modern, terinspirasi dari konsep Friv Grid klasik.</p>
+                <p style="margin-top:10px">Mainkan <strong style="color:#a78bfa">Sudoku Pro</strong> dan <strong style="color:#10b981">Wordle Indonesia</strong> secara solo atau multiplayer bersama teman secara realtime.</p>
             </div>`,
         confirmButtonText: 'Mengerti',
-        width: 460,
+        width: 400,
     });
 }
 
 function showComingSoon(gameName) {
     Swal.fire({
         ...swalDark,
-        title: '⏳ Segera Hadir!',
-        html: `Game <strong style="color:#8b5cf6">${escapeHTML(gameName)}</strong> sedang dikembangkan oleh tim kami.<br><br><span style="color:#6b7280;font-size:0.8rem">Tunggu pembaruan berikutnya!</span>`,
-        confirmButtonText: '👍 Siap, Ditunggu!',
+        title: 'Segera Hadir!',
+        html: `Game <strong style="color:#8b5cf6">${escapeHTML(gameName)}</strong> sedang dikembangkan.<br><br><span style="color:#6b7280;font-size:0.8rem">Tunggu pembaruan berikutnya!</span>`,
+        confirmButtonText: 'Siap, Ditunggu!',
         width: 360,
     });
 }
