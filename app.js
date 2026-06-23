@@ -73,10 +73,14 @@ function setupLobby() {
         config: { presence: { key: myClientId } },
     });
 
+    // Re-render on any presence change (sync covers all edge cases,
+    // join/leave give faster visual feedback)
+    const onPresenceChange = () => renderLobby(lobbyChannel.presenceState());
+
     lobbyChannel
-        .on('presence', { event: 'sync' }, () => {
-            renderLobby(lobbyChannel.presenceState());
-        })
+        .on('presence', { event: 'sync' },  onPresenceChange)
+        .on('presence', { event: 'join' },  onPresenceChange)
+        .on('presence', { event: 'leave' }, onPresenceChange)
         .subscribe(async (status) => {
             if (status === 'SUBSCRIBED') {
                 lobbyChannel.track({
@@ -88,6 +92,7 @@ function setupLobby() {
             }
         });
 }
+
 
 function renderLobby(presenceState) {
     const allPresences = [];
@@ -141,28 +146,28 @@ function renderLobby(presenceState) {
             const btnAction = isFull ? '' : `onclick="window.location.href='${joinUrl}'"`;
 
             return `
-                <div class="flex flex-col gap-2 p-3 rounded-xl border border-gray-800/60 bg-gray-900/40 hover:border-gray-700/50 transition-all duration-200">
-                    <!-- Top row: icon + info -->
-                    <div class="flex items-center gap-2.5">
-                        <div class="w-8 h-8 flex-shrink-0 rounded-lg ${iconBg} border flex items-center justify-center">
-                            <i class="fa-solid ${gameIcon} ${iconColor} text-sm"></i>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-center gap-1.5 flex-wrap mb-0.5">
-                                <span class="text-[8px] font-bold border uppercase tracking-wider px-1.5 py-0.5 rounded ${badgeClass}">${gameLabel}</span>
-                                <span class="text-[8px] text-gray-500 flex items-center gap-1">
-                                    <span class="w-1.5 h-1.5 rounded-full ${isFull ? 'bg-red-400' : 'bg-emerald-400'}"></span>
-                                    ${currentCount}/${maxPlayers}
-                                </span>
-                            </div>
-                            <p class="text-white text-[11px] font-semibold truncate leading-tight">${escapeHTML(room.hostName || 'Host')}</p>
-                            <p class="text-gray-500 text-[9px] font-mono tracking-wide">${escapeHTML(room.roomCode)}</p>
-                        </div>
+                <div class="lobby-room-card">
+                    <!-- Header: game badge + player count -->
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="lobby-badge ${isWordle ? 'lobby-badge--wordle' : 'lobby-badge--sudoku'}">
+                            <i class="fa-solid ${gameIcon}"></i> ${gameLabel}
+                        </span>
+                        <span class="lobby-players ${isFull ? 'lobby-players--full' : 'lobby-players--open'}">
+                            <span class="lobby-dot ${isFull ? 'lobby-dot--full' : 'lobby-dot--open'}"></span>
+                            ${currentCount}/${maxPlayers}
+                        </span>
                     </div>
-                    <!-- Join button — full width, never overlaps -->
-                    <button ${btnAction} ${isFull ? 'disabled' : ''} 
-                        class="w-full py-1.5 rounded-lg text-[10px] font-bold transition-all active:scale-95 flex items-center justify-center gap-1.5 ${isFull ? 'bg-gray-800 text-gray-500 border border-gray-700/30 cursor-not-allowed' : 'bg-gradient-to-r from-brandPurple to-brandIndigo text-white hover:opacity-90'}">
-                        ${isFull ? '<i class="fa-solid fa-lock"></i> Penuh' : '<i class="fa-solid fa-right-to-bracket"></i> Gabung'}
+                    <!-- Host name -->
+                    <p class="lobby-hostname">${escapeHTML(room.hostName || 'Host')}</p>
+                    <!-- Room code -->
+                    <p class="lobby-code">${escapeHTML(room.roomCode)}</p>
+                    <!-- Join button -->
+                    <button ${btnAction} ${isFull ? 'disabled' : ''}
+                        class="lobby-join-btn ${isFull ? 'lobby-join-btn--full' : 'lobby-join-btn--open'}">
+                        ${isFull
+                            ? '<i class="fa-solid fa-lock"></i> Penuh'
+                            : '<i class="fa-solid fa-right-to-bracket"></i> Gabung'
+                        }
                     </button>
                 </div>`;
 

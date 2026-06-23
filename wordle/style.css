@@ -319,3 +319,33 @@ h1, h2, h3, h4, h5, h6 {
     }
 }
 
+/* ── Custom Scrollbar ─────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: rgba(15, 22, 35, 0.4); border-radius: 99px; }
+::-webkit-scrollbar-thumb { background: rgba(16, 185, 129, 0.35); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(16, 185, 129, 0.6); }
+* { scrollbar-width: thin; scrollbar-color: rgba(16,185,129,0.35) rgba(15,22,35,0.4); }
+
+/* ── SweetAlert2 Dark Theme Overrides ────────────────────────────── */
+.swal2-popup {
+    font-family: var(--font-body) !important;
+    border: 1px solid rgba(16, 185, 129, 0.2) !important;
+    border-radius: 1.25rem !important;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.6) !important;
+}
+.swal2-title {
+    font-family: var(--font-heading) !important;
+    font-size: 1.15rem !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.02em !important;
+}
+.swal2-html-container { font-size: 0.83rem !important; line-height: 1.6 !important; color: #9ca3af !important; }
+.swal2-confirm, .swal2-cancel {
+    font-family: var(--font-body) !important;
+    font-weight: 700 !important;
+    font-size: 0.8rem !important;
+    border-radius: 0.6rem !important;
+    padding: 0.55rem 1.4rem !important;
+}
+.swal2-confirm:hover { opacity: 0.88; transform: translateY(-1px); }
+.swal2-timer-progress-bar { background: rgba(16, 185, 129, 0.7) !important; }

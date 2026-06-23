@@ -892,11 +892,7 @@ function shareRoomToLobby() {
     }
 
     lobbyChannel = supabaseClient.channel('arcade-lobby', {
-        config: {
-            presence: {
-                key: myClientId,
-            },
-        },
+        config: { presence: { key: myClientId } },
     });
 
     lobbyChannel.subscribe(async (status) => {
@@ -917,10 +913,18 @@ function shareRoomToLobby() {
                 shareBtn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Telah Dibagikan';
                 shareBtn.className = "px-3 py-1.5 bg-emerald-600/20 text-emerald-400 border border-emerald-600/20 rounded text-[10px] font-bold cursor-not-allowed flex items-center justify-center gap-1";
             }
-            showToast("Room berhasil dibagikan ke Lobby!");
+
+            Swal.fire({
+                background: '#0f1623', color: '#e5e7eb', confirmButtonColor: '#8b5cf6',
+                title: 'Room Dibagikan! 🎉',
+                html: `Kode <b style="color:#10b981">${roomCode}</b> kini terlihat di Lobby utama.`,
+                icon: 'success', iconColor: '#10b981',
+                timer: 2500, timerProgressBar: true, showConfirmButton: false,
+            });
         }
     });
 }
+
 
 function handlePresenceSync(presenceState) {
     const players = [];
