@@ -995,7 +995,6 @@ export default function SudokuGame() {
             customClass: { popup: 'ornate-border classic-card' }
           }).then(() => {
             leaveVersusRoom()
-            router.push('/')
           })
         }
         break

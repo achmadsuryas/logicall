@@ -741,7 +741,6 @@ export default function WordleGame() {
             customClass: { popup: 'ornate-border classic-card' }
           }).then(() => {
             leaveVersusRoom()
-            router.push('/')
           })
         }
       })

@@ -724,7 +724,6 @@ export default function BingoGame() {
             customClass: { popup: 'ornate-border classic-card' }
           }).then(() => {
             leaveVersusRoom()
-            router.push('/')
           })
         }
       })

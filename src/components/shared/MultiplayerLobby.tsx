@@ -89,7 +89,7 @@ export default function MultiplayerLobby({
                 <label className="text-[9px] font-bold uppercase tracking-wider" style={{ color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)' }}>
                   Kapasitas Room
                 </label>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   {gameKey === 'Wordle' ? (
                     <div
                       className="flex-1 rounded px-2.5 py-1.5 text-xs font-bold flex items-center justify-center border"
@@ -128,7 +128,7 @@ export default function MultiplayerLobby({
                 <label className="text-[9px] font-bold uppercase tracking-wider" style={{ color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)' }}>
                   Gabung Room Lain
                 </label>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   <input
                     type="text"
                     placeholder="Kode Room"
@@ -154,7 +154,7 @@ export default function MultiplayerLobby({
               <p className="text-[10px]" style={{ color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)' }}>
                 Kode Room Anda:
               </p>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <input
                   readOnly
                   value={roomCode}
@@ -164,7 +164,7 @@ export default function MultiplayerLobby({
                 <button onClick={onCopyRoomCode} className="brass-btn px-2.5 py-1 text-[9px]">Salin Kode</button>
                 <button onClick={onCopyRoomCode} className="brass-btn px-2.5 py-1 text-[9px]">Salin Link</button>
               </div>
-              <div className="flex gap-2 mt-1">
+              <div className="flex flex-wrap gap-2 mt-1">
                 {/* Share to lobby */}
                 {isHost && !isSharedToLobby && (
                   <button onClick={onShareLobby} className="flex-1 py-2 rounded text-[10px] font-bold transition flex items-center justify-center gap-1" style={{ background: 'rgba(139,92,246,0.12)', color: '#a78bfa', border: '1px solid rgba(139,92,246,0.2)', fontFamily: 'var(--font-mono)' }}>
