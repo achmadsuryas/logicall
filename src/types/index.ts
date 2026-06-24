@@ -19,6 +19,7 @@ export interface ActiveRoom {
   hostName: string
   playerCount: number
   maxPlayers: number
+  status: 'lobby' | 'in-game'
 }
 
 export type GameKey = 'wordle' | 'sudoku' | 'bingo' | 'typerace'

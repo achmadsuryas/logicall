@@ -293,10 +293,11 @@ export default function SudokuGame() {
         hostName: username,
         playerCount: players.length,
         maxPlayers,
+        status: versusStarted ? 'in-game' : 'lobby',
         updatedAt: new Date().toISOString()
       })
     }
-  }, [players.length, maxPlayers, username, isMultiplayer, isHost, isSharedToLobby, roomCode])
+  }, [players.length, maxPlayers, username, isMultiplayer, isHost, isSharedToLobby, roomCode, versusStarted])
 
   const clearIntervals = () => {
     if (timerIntervalRef.current) {

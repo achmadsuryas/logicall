@@ -150,10 +150,11 @@ export default function WordleGame() {
         hostName: username,
         playerCount: players.length,
         maxPlayers: 2,
+        status: versusStarted ? 'in-game' : 'lobby',
         updatedAt: new Date().toISOString()
       })
     }
-  }, [players.length, username, isMultiplayer, isHost, isSharedToLobby, roomCode])
+  }, [players.length, username, isMultiplayer, isHost, isSharedToLobby, roomCode, versusStarted])
 
   // --- START GAME SEQUENCE ---
   const triggerGameStartSequence = (word: string, hasCountdown = true) => {

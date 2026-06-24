@@ -41,6 +41,7 @@ export default function LobbyPanel() {
           hostName: p.hostName || 'Host',
           playerCount: p.playerCount || 1,
           maxPlayers: p.maxPlayers || 4,
+          status: p.status || 'lobby',
         })
       }
     })
@@ -177,6 +178,8 @@ export default function LobbyPanel() {
           rooms.map(room => {
             const gameKey = room.game.toLowerCase()
             const isFull = room.playerCount >= room.maxPlayers
+            const isInGame = room.status === 'in-game'
+            const cannotJoin = isFull || isInGame
             const joinUrl = `./${gameKey}/?room=${encodeURIComponent(room.roomCode)}`
 
             return (
@@ -189,22 +192,25 @@ export default function LobbyPanel() {
                     }
                     {GAME_LABELS[gameKey] ?? gameKey}
                   </span>
-                  <span className={`lobby-players lobby-players--${isFull ? 'full' : 'open'}`}>
-                    <span className={`lobby-dot lobby-dot--${isFull ? 'full' : 'open'}`} />
+                  <span className={`lobby-players lobby-players--${cannotJoin ? 'full' : 'open'}`}>
+                    <span className={`lobby-dot lobby-dot--${cannotJoin ? 'full' : 'open'}`} />
                     {room.playerCount}/{room.maxPlayers}
                   </span>
                 </div>
                 <p className="lobby-hostname">{escapeHTML(room.hostName)}</p>
                 <p className="lobby-code">{escapeHTML(room.roomCode)}</p>
                 <button
-                  disabled={isFull}
-                  onClick={() => !isFull && (window.location.href = joinUrl)}
-                  className={`lobby-join-btn lobby-join-btn--${isFull ? 'full' : 'open'}`}
+                  disabled={cannotJoin}
+                  onClick={() => !cannotJoin && (window.location.href = joinUrl)}
+                  className={`lobby-join-btn lobby-join-btn--${cannotJoin ? 'full' : 'open'}`}
                 >
-                  {isFull
-                    ? <><i className="fa-solid fa-lock" /> Penuh</>
-                    : <><i className="fa-solid fa-right-to-bracket" /> Gabung</>
-                  }
+                  {isFull ? (
+                    <><i className="fa-solid fa-lock" /> Penuh</>
+                  ) : isInGame ? (
+                    <><i className="fa-solid fa-gamepad" /> Bermain</>
+                  ) : (
+                    <><i className="fa-solid fa-right-to-bracket" /> Gabung</>
+                  )}
                 </button>
               </div>
             )

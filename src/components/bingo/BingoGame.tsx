@@ -229,10 +229,11 @@ export default function BingoGame() {
         hostName: username,
         playerCount: players.length,
         maxPlayers,
+        status: versusStarted ? 'in-game' : 'lobby',
         updatedAt: new Date().toISOString()
       })
     }
-  }, [players.length, maxPlayers, username, isMultiplayer, isHost, isSharedToLobby, roomCode])
+  }, [players.length, maxPlayers, username, isMultiplayer, isHost, isSharedToLobby, roomCode, versusStarted])
 
   const clearDrawInterval = () => {
     if (autoDrawIntervalRef.current) {

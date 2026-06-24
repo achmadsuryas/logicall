@@ -316,10 +316,11 @@ export default function TypeRaceGame() {
         hostName: username,
         playerCount: players.length,
         maxPlayers,
+        status: versusStarted ? 'in-game' : 'lobby',
         updatedAt: new Date().toISOString()
       })
     }
-  }, [players.length, maxPlayers, username, isMultiplayer, isHost, isSharedToLobby, roomCode])
+  }, [players.length, maxPlayers, username, isMultiplayer, isHost, isSharedToLobby, roomCode, versusStarted])
 
   // ── Toast ─────────────────────────────────────────────────────────────────
   const showToast = useCallback((msg: string) => {
