@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Playfair_Display, IBM_Plex_Mono } from 'next/font/google'
 import './globals.css'
 
@@ -19,6 +19,13 @@ export const metadata: Metadata = {
   title: 'Logicall — Portal Game Logika & Asah Otak',
   description:
     'Portal game minimalis dengan Sudoku Pro, Wordle Bahasa Indonesia, Bingo Royale, dan Type Race. Mainkan solo atau multiplayer real-time bersama teman!',
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 }
 
 export default function RootLayout({
