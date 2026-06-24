@@ -547,7 +547,7 @@ export default function SudokuGame() {
     return true
   }
 
-  const handleWin = () => {
+  const handleWin = (shouldBroadcast = true) => {
     pauseTimer()
     setIsGameActive(false)
     clearGameProgress()
@@ -607,7 +607,7 @@ export default function SudokuGame() {
       }
     })
 
-    if (isMultiplayerRef.current && roomChannelRef.current) {
+    if (shouldBroadcast && isMultiplayerRef.current && roomChannelRef.current) {
       roomChannelRef.current.send({
         type: 'broadcast',
         event: 'game-event',
@@ -616,7 +616,7 @@ export default function SudokuGame() {
     }
   }
 
-  const handleGameOver = () => {
+  const handleGameOver = (shouldBroadcast = true) => {
     pauseTimer()
     setIsGameActive(false)
     clearGameProgress()
@@ -663,7 +663,7 @@ export default function SudokuGame() {
       }
     })
 
-    if (isMultiplayerRef.current && roomChannelRef.current) {
+    if (shouldBroadcast && isMultiplayerRef.current && roomChannelRef.current) {
       roomChannelRef.current.send({
         type: 'broadcast',
         event: 'game-event',
@@ -1016,11 +1016,11 @@ export default function SudokuGame() {
 
       case 'win':
         setSecondsElapsed(payload.secondsElapsed)
-        handleWin()
+        handleWin(false)
         break
 
       case 'game-over':
-        handleGameOver()
+        handleGameOver(false)
         break
 
       case 'kick':

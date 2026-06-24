@@ -91,6 +91,16 @@ export default function WordleGame() {
   const opponentOutcomeRef = useRef('')
   const opponentFinalRowRef = useRef(0)
   const opponentNameRef = useRef('')
+  const opponentFinishedRef = useRef(false)
+  const myFinishedRef = useRef(false)
+
+  useEffect(() => {
+    opponentFinishedRef.current = opponentFinished
+  }, [opponentFinished])
+
+  useEffect(() => {
+    myFinishedRef.current = myFinished
+  }, [myFinished])
 
   useEffect(() => { secretWordRef.current = secretWord }, [secretWord])
   useEffect(() => { guessesRef.current = guesses }, [guesses])
@@ -430,11 +440,7 @@ export default function WordleGame() {
           setMyFinished(true)
           setGameActive(false)
           setIsAnimating(false)
-          if (opponentFinished) {
-            endVersusMatch(false, currentRow, guess)
-          } else {
-            showToast("Menunggu lawan menyelesaikan...")
-          }
+          endVersusMatch(false, currentRow, guess)
         } else {
           handleLoss()
         }
@@ -508,27 +514,38 @@ export default function WordleGame() {
     let messageText = ""
 
     const actualIWon = myLastGuess === secWord
+    const oppFinished = opponentFinishedRef.current
 
-    if (actualIWon && oppWin) {
-      if (myFinalRow < oppFinalRow) {
-        titleText = "Anda Menang!"
-        messageText = `Selamat! Anda berhasil menebak dalam ${myFinalRow + 1} baris, sedangkan lawan dalam ${oppFinalRow + 1} baris.`
-      } else if (myFinalRow > oppFinalRow) {
-        titleText = "Lawan Menang!"
-        messageText = `${oppName || 'Lawan'} berhasil menebak dalam ${oppFinalRow + 1} baris, sedangkan Anda dalam ${myFinalRow + 1} baris.`
+    if (!oppFinished) {
+      if (actualIWon) {
+        titleText = "Menunggu Lawan"
+        messageText = `Selamat! Anda berhasil menebak kata rahasia [${secWord}]. Menunggu lawan menyelesaikan permainan...`
       } else {
-        titleText = "Hasil Seri!"
-        messageText = `Kedua pemain berhasil menebak kata rahasia dalam ${myFinalRow + 1} baris!`
+        titleText = "Menunggu Lawan"
+        messageText = `Kesempatan menebak Anda habis. Menunggu lawan menyelesaikan permainan...`
       }
-    } else if (actualIWon) {
-      titleText = "Anda Menang!"
-      messageText = `Selamat! Anda berhasil menebak kata rahasia [${secWord}], sedangkan lawan gagal!`
-    } else if (oppWin) {
-      titleText = "Lawan Menang!"
-      messageText = `${oppName || 'Lawan'} berhasil menebak kata rahasia [${secWord}], sedangkan Anda gagal!`
     } else {
-      titleText = "Permainan Selesai!"
-      messageText = `Kedua pemain gagal menebak kata rahasia [${secWord}].`
+      if (actualIWon && oppWin) {
+        if (myFinalRow < oppFinalRow) {
+          titleText = "Anda Menang!"
+          messageText = `Selamat! Anda berhasil menebak dalam ${myFinalRow + 1} baris, sedangkan lawan dalam ${oppFinalRow + 1} baris.`
+        } else if (myFinalRow > oppFinalRow) {
+          titleText = "Lawan Menang!"
+          messageText = `${oppName || 'Lawan'} berhasil menebak dalam ${oppFinalRow + 1} baris, sedangkan Anda dalam ${myFinalRow + 1} baris.`
+        } else {
+          titleText = "Hasil Seri!"
+          messageText = `Kedua pemain berhasil menebak kata rahasia dalam ${myFinalRow + 1} baris!`
+        }
+      } else if (actualIWon) {
+        titleText = "Anda Menang!"
+        messageText = `Selamat! Anda berhasil menebak kata rahasia [${secWord}], sedangkan lawan gagal!`
+      } else if (oppWin) {
+        titleText = "Lawan Menang!"
+        messageText = `${oppName || 'Lawan'} berhasil menebak kata rahasia [${secWord}], sedangkan Anda gagal!`
+      } else {
+        titleText = "Permainan Selesai!"
+        messageText = `Kedua pemain gagal menebak kata rahasia [${secWord}].`
+      }
     }
 
     // Save stats
@@ -729,7 +746,13 @@ export default function WordleGame() {
         })
         showToast("Lawan telah selesai!")
 
-        if (payload.outcome === 'win') {
+        if (myFinishedRef.current) {
+          setTimeout(() => {
+            const myLastGuess = guessesRef.current[currentRowRef.current]
+            const actualIWon = myLastGuess === secretWordRef.current
+            endVersusMatch(actualIWon, currentRowRef.current, myLastGuess)
+          }, 1000)
+        } else if (payload.outcome === 'win') {
           setMyFinished(true)
           setGameActive(false)
           // Evaluate match outcome immediately if opponent won

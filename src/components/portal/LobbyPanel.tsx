@@ -84,19 +84,12 @@ export default function LobbyPanel() {
     countdownRef.current = setInterval(() => {
       setCountdown(prev => {
         if (prev <= 1) {
-          // Auto-refresh
-          setRefreshing(true)
-          if (channelRef.current) supabase.removeChannel(channelRef.current)
-          setTimeout(() => {
-            setupLobby()
-            setRefreshing(false)
-          }, 600)
           return 10
         }
         return prev - 1
       })
     }, 1000)
-  }, [setupLobby])
+  }, [])
 
   const handleRefresh = () => {
     setRefreshing(true)
