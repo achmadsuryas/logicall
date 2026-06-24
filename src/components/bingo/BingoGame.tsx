@@ -76,6 +76,11 @@ export default function BingoGame() {
     isMultiplayerRef.current = isMultiplayer
   }, [isMultiplayer])
 
+  const playersRef = useRef<PlayerInfo[]>([])
+  useEffect(() => {
+    playersRef.current = players
+  }, [players])
+
   const currentStageRef = useRef(1)
   const gameActiveRef = useRef(false)
 
@@ -907,7 +912,7 @@ export default function BingoGame() {
   }
 
   const startVersusGame = async () => {
-    if (!isHostRef.current || players.length < 2 || !roomChannelRef.current) {
+    if (!isHostRef.current || playersRef.current.length < 2 || !roomChannelRef.current) {
       showToast("Butuh minimal 2 pemain!")
       return
     }

@@ -95,6 +95,11 @@ export default function WordleGame() {
   const myFinishedRef = useRef(false)
   const versusEndTimeoutRef = useRef<any>(null)
   const hasSavedStatsRef = useRef(false)
+  const playersRef = useRef<PlayerInfo[]>([])
+
+  useEffect(() => {
+    playersRef.current = players
+  }, [players])
 
   useEffect(() => {
     opponentFinishedRef.current = opponentFinished
@@ -938,7 +943,7 @@ export default function WordleGame() {
   }
 
   const startVersusGame = async () => {
-    if (!isHost || players.length < 2 || !roomChannelRef.current) {
+    if (!isHostRef.current || playersRef.current.length < 2 || !roomChannelRef.current) {
       showToast("Butuh minimal 2 pemain!")
       return
     }
