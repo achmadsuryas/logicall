@@ -908,7 +908,7 @@ export default function TypeRaceGame() {
   }, [])
 
   const copyRoomCode = () => { navigator.clipboard.writeText(roomCode); showToast('Kode room disalin!') }
-  const copyRoomLink = () => { navigator.clipboard.writeText(roomCode); showToast('Kode room disalin!') }
+  const copyRoomLink = () => { navigator.clipboard.writeText(shareLink); showToast('Link room disalin!') }
 
   const handleUsernameChange = (val: string) => {
     setUsername(val)
@@ -1036,7 +1036,7 @@ export default function TypeRaceGame() {
             <div className="flex flex-col gap-2 p-2.5 rounded" style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid var(--color-border)' }}>
               <p className="text-[10px]" style={{ color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)' }}>Undang Teman Anda:</p>
               <div className="flex gap-2">
-                <input readOnly value={shareLink} className="flex-grow text-[10px] rounded px-2 py-1 focus:outline-none" style={{ background: 'transparent', border: '1px solid var(--color-border)', color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)' }} />
+                <input readOnly value={roomCode} className="flex-grow text-[10px] rounded px-2 py-1 focus:outline-none" style={{ background: 'transparent', border: '1px solid var(--color-border)', color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)' }} />
                 <button onClick={copyRoomCode} className="brass-btn px-2 py-1 text-[9px]">Salin Kode</button>
                 <button onClick={copyRoomLink} className="brass-btn px-2 py-1 text-[9px]">Salin Link</button>
               </div>

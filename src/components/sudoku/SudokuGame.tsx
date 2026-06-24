@@ -1492,7 +1492,7 @@ export default function SudokuGame() {
         showRoomInfo={showRoomInfo}
         shareLink={shareLink}
         onCopyRoomCode={copyRoomCode}
-        onCopyRoomLink={copyRoomCode}
+        onCopyRoomLink={copyRoomLink}
         soloSettingsSlot={
           <div className="flex items-center justify-between">
             <div>

@@ -1239,7 +1239,7 @@ export default function WordleGame() {
         showRoomInfo={showRoomInfo}
         shareLink={shareLink}
         onCopyRoomCode={copyRoomCode}
-        onCopyRoomLink={copyRoomCode}
+        onCopyRoomLink={copyRoomLink}
       />
 
       {/* Main Boards Area */}

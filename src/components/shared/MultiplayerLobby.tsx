@@ -166,7 +166,7 @@ export default function MultiplayerLobby({
                   style={{ background: '#05040200', border: '1px solid var(--color-border)', color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)' }}
                 />
                 <button onClick={onCopyRoomCode} className="brass-btn px-2.5 py-1 text-[9px]">Salin Kode</button>
-                <button onClick={onCopyRoomCode} className="brass-btn px-2.5 py-1 text-[9px]">Salin Link</button>
+                <button onClick={onCopyRoomLink} className="brass-btn px-2.5 py-1 text-[9px]">Salin Link</button>
               </div>
               <div className="flex flex-wrap gap-2 mt-1">
                 {/* Share to lobby */}
