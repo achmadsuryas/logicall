@@ -93,6 +93,8 @@ export default function WordleGame() {
   const opponentNameRef = useRef('')
   const opponentFinishedRef = useRef(false)
   const myFinishedRef = useRef(false)
+  const versusEndTimeoutRef = useRef<any>(null)
+  const hasSavedStatsRef = useRef(false)
 
   useEffect(() => {
     opponentFinishedRef.current = opponentFinished
@@ -146,8 +148,15 @@ export default function WordleGame() {
     }
 
     return () => {
-      if (roomChannelRef.current) supabase.removeChannel(roomChannelRef.current)
-      if (lobbyChannelRef.current) supabase.removeChannel(lobbyChannelRef.current)
+      if (versusEndTimeoutRef.current) clearTimeout(versusEndTimeoutRef.current)
+      if (roomChannelRef.current) {
+        try { roomChannelRef.current.untrack() } catch (e) {}
+        supabase.removeChannel(roomChannelRef.current)
+      }
+      if (lobbyChannelRef.current) {
+        try { lobbyChannelRef.current.untrack() } catch (e) {}
+        supabase.removeChannel(lobbyChannelRef.current)
+      }
     }
   }, []) // eslint-disable-line
 
@@ -181,6 +190,7 @@ export default function WordleGame() {
     setOpponentFinalRow(0)
     setSecretWord(word)
     setVersusStarted(true)
+    hasSavedStatsRef.current = false
 
     if (hasCountdown) {
       setGameActive(false)
@@ -503,6 +513,10 @@ export default function WordleGame() {
 
   // --- END OF MULTIPLAYER MATCH ---
   const endVersusMatch = (iWon: boolean, myFinalRow: number, myLastGuess: string) => {
+    if (versusEndTimeoutRef.current) {
+      clearTimeout(versusEndTimeoutRef.current)
+    }
+
     const oppWin = opponentOutcomeRef.current === 'win'
     const oppFinalRow = opponentFinalRowRef.current
     const secWord = secretWordRef.current
@@ -548,26 +562,31 @@ export default function WordleGame() {
       }
     }
 
-    // Save stats
-    const nextStats = { ...currentStats }
-    if (actualIWon) {
-      nextStats.played++
-      nextStats.won++
-      nextStats.streak++
-      if (nextStats.streak > nextStats.maxStreak) {
-        nextStats.maxStreak = nextStats.streak
+    // Save stats exactly once
+    if (!hasSavedStatsRef.current) {
+      hasSavedStatsRef.current = true
+      const nextStats = { ...currentStats }
+      if (actualIWon) {
+        nextStats.played++
+        nextStats.won++
+        nextStats.streak++
+        if (nextStats.streak > nextStats.maxStreak) {
+          nextStats.maxStreak = nextStats.streak
+        }
+        nextStats.distribution[myFinalRow]++
+      } else {
+        nextStats.played++
+        nextStats.streak = 0
       }
-      nextStats.distribution[myFinalRow]++
-    } else {
-      nextStats.played++
-      nextStats.streak = 0
+      setStats(nextStats)
+      localStorage.setItem('logicall_wordle_stats', JSON.stringify(nextStats))
     }
-    setStats(nextStats)
-    localStorage.setItem('logicall_wordle_stats', JSON.stringify(nextStats))
 
     showToast(titleText)
 
-    setTimeout(() => {
+    const delay = oppFinished ? 1000 : 2500
+
+    versusEndTimeoutRef.current = setTimeout(() => {
       Swal.fire({
         title: titleText,
         html: `
@@ -576,7 +595,8 @@ export default function WordleGame() {
             <div style="margin: 15px 0; padding: 10px; background: rgba(0,0,0,0.3); border: 1px dashed var(--color-border); border-radius: 4px;">
               Kata Rahasia: <strong style="color: var(--color-gold); font-size: 1.1rem; letter-spacing: 2px;">${secWord}</strong>
             </div>
-            ${!hostFlag ? '<div style="margin-top: 15px; padding: 8px; border: 1px dashed var(--color-gold-dim); color: var(--color-gold); font-size: 0.75rem; font-weight: bold; animation: pulse 2s infinite;">Menunggu Host memulai kembali...</div>' : ''}
+            ${!oppFinished ? '<div style="margin-top: 15px; padding: 8px; border: 1px dashed var(--color-gold-dim); color: var(--color-gold); font-size: 0.75rem; font-weight: bold; animation: pulse 2s infinite;">Menunggu lawan selesai bermain...</div>' : ''}
+            ${oppFinished && !hostFlag ? '<div style="margin-top: 15px; padding: 8px; border: 1px dashed var(--color-gold-dim); color: var(--color-gold); font-size: 0.75rem; font-weight: bold; animation: pulse 2s infinite;">Menunggu Host memulai kembali...</div>' : ''}
           </div>
         `,
         icon: actualIWon ? 'success' : 'info',
@@ -592,7 +612,7 @@ export default function WordleGame() {
           title: 'text-lg font-bold uppercase tracking-wider',
         },
         didOpen: () => {
-          if (!hostFlag) {
+          if (!oppFinished || !hostFlag) {
             const confirmBtn = Swal.getConfirmButton();
             if (confirmBtn) {
               confirmBtn.setAttribute('disabled', 'true');
@@ -611,7 +631,8 @@ export default function WordleGame() {
           router.push('/')
         }
       })
-    }, 2500)
+      versusEndTimeoutRef.current = null
+    }, delay)
   }
 
   const showGameOverModal = (isWin: boolean, row: number) => {
@@ -838,6 +859,10 @@ export default function WordleGame() {
   }
 
   const leaveVersusRoom = () => {
+    if (versusEndTimeoutRef.current) {
+      clearTimeout(versusEndTimeoutRef.current)
+      versusEndTimeoutRef.current = null
+    }
     if (isHost && roomChannelRef.current) {
       roomChannelRef.current.send({
         type: 'broadcast',
@@ -846,10 +871,12 @@ export default function WordleGame() {
       })
     }
     if (roomChannelRef.current) {
+      try { roomChannelRef.current.untrack() } catch (e) {}
       supabase.removeChannel(roomChannelRef.current)
       roomChannelRef.current = null
     }
     if (lobbyChannelRef.current) {
+      try { lobbyChannelRef.current.untrack() } catch (e) {}
       supabase.removeChannel(lobbyChannelRef.current)
       lobbyChannelRef.current = null
     }

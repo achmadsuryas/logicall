@@ -293,8 +293,14 @@ export default function TypeRaceGame() {
 
     return () => {
       if (timerRef.current) clearInterval(timerRef.current)
-      if (roomChannelRef.current) supabase.removeChannel(roomChannelRef.current)
-      if (lobbyChannelRef.current) supabase.removeChannel(lobbyChannelRef.current)
+      if (roomChannelRef.current) {
+        try { roomChannelRef.current.untrack() } catch (e) {}
+        supabase.removeChannel(roomChannelRef.current)
+      }
+      if (lobbyChannelRef.current) {
+        try { lobbyChannelRef.current.untrack() } catch (e) {}
+        supabase.removeChannel(lobbyChannelRef.current)
+      }
     }
   }, []) // eslint-disable-line
 
@@ -830,8 +836,16 @@ export default function TypeRaceGame() {
         payload: {}
       })
     }
-    if (roomChannelRef.current) { supabase.removeChannel(roomChannelRef.current); roomChannelRef.current = null }
-    if (lobbyChannelRef.current) { supabase.removeChannel(lobbyChannelRef.current); lobbyChannelRef.current = null }
+    if (roomChannelRef.current) {
+      try { roomChannelRef.current.untrack() } catch (e) {}
+      supabase.removeChannel(roomChannelRef.current)
+      roomChannelRef.current = null
+    }
+    if (lobbyChannelRef.current) {
+      try { lobbyChannelRef.current.untrack() } catch (e) {}
+      supabase.removeChannel(lobbyChannelRef.current)
+      lobbyChannelRef.current = null
+    }
     if (timerRef.current) clearInterval(timerRef.current)
     setIsMultiplayer(false); setIsHost(false); setRoomCode(''); setIsSharedToLobby(false)
     setShowRoomInfo(false); setPlayers([]); setPhase('idle')

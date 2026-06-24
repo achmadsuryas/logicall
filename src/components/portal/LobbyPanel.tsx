@@ -107,7 +107,10 @@ export default function LobbyPanel() {
     setupLobby()
     startCountdown()
     return () => {
-      if (channelRef.current) supabase.removeChannel(channelRef.current)
+      if (channelRef.current) {
+        try { channelRef.current.untrack() } catch (e) {}
+        supabase.removeChannel(channelRef.current)
+      }
       if (countdownRef.current) clearInterval(countdownRef.current)
     }
   }, [setupLobby, startCountdown])

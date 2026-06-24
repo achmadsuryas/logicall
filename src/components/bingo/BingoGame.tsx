@@ -76,6 +76,17 @@ export default function BingoGame() {
     isMultiplayerRef.current = isMultiplayer
   }, [isMultiplayer])
 
+  const currentStageRef = useRef(1)
+  const gameActiveRef = useRef(false)
+
+  useEffect(() => {
+    currentStageRef.current = currentStage
+  }, [currentStage])
+
+  useEffect(() => {
+    gameActiveRef.current = gameActive
+  }, [gameActive])
+
   // --- TOAST STATE ---
   const [toasts, setToasts] = useState<{ id: number; msg: string }[]>([])
   const toastId = useRef(0)
@@ -226,8 +237,14 @@ export default function BingoGame() {
 
     return () => {
       clearDrawInterval()
-      if (roomChannelRef.current) supabase.removeChannel(roomChannelRef.current)
-      if (lobbyChannelRef.current) supabase.removeChannel(lobbyChannelRef.current)
+      if (roomChannelRef.current) {
+        try { roomChannelRef.current.untrack() } catch (e) {}
+        supabase.removeChannel(roomChannelRef.current)
+      }
+      if (lobbyChannelRef.current) {
+        try { lobbyChannelRef.current.untrack() } catch (e) {}
+        supabase.removeChannel(lobbyChannelRef.current)
+      }
     }
   }, []) // eslint-disable-line
 
@@ -327,11 +344,13 @@ export default function BingoGame() {
     const lines = getCompletedLines(markedGrid)
     const isFullHouse = markedGrid.every(row => row.every(val => val))
 
-    if (currentStage === 1 && lines >= 1) {
+    const activeStage = currentStageRef.current
+
+    if (activeStage === 1 && lines >= 1) {
       triggerStageCompletion(1, username, myClientId.current)
-    } else if (currentStage === 2 && lines >= 2) {
+    } else if (activeStage === 2 && lines >= 2) {
       triggerStageCompletion(2, username, myClientId.current)
-    } else if (currentStage === 3 && isFullHouse) {
+    } else if (activeStage === 3 && isFullHouse) {
       triggerStageCompletion(3, username, myClientId.current)
     }
   }
@@ -356,7 +375,11 @@ export default function BingoGame() {
     clearDrawInterval()
     announceVoice(`Bingo! ${isMe ? 'Anda' : achieverName} Bingo!`)
 
-    if (stage === 1 && currentStage === 1) {
+    const activeStage = currentStageRef.current
+    const hostFlag = isHostRef.current
+    const multiFlag = isMultiplayerRef.current
+
+    if (stage === 1 && activeStage === 1) {
       setCurrentStage(2)
       setOpponents(prev =>
         prev.map(o => o.clientId === achieverId ? { ...o, status: 'bingo1', stageCompleted: 1 } : o)
@@ -379,12 +402,12 @@ export default function BingoGame() {
         timerProgressBar: true,
         customClass: { popup: 'ornate-border classic-card' }
       }).then(() => {
-        if (gameActive) {
+        if (gameActiveRef.current) {
           startDrawnTimer()
         }
       })
 
-    } else if (stage === 2 && currentStage === 2) {
+    } else if (stage === 2 && activeStage === 2) {
       setCurrentStage(3)
       setOpponents(prev =>
         prev.map(o => o.clientId === achieverId ? { ...o, status: 'bingo2', stageCompleted: 2 } : o)
@@ -407,12 +430,12 @@ export default function BingoGame() {
         timerProgressBar: true,
         customClass: { popup: 'ornate-border classic-card' }
       }).then(() => {
-        if (gameActive) {
+        if (gameActiveRef.current) {
           startDrawnTimer()
         }
       })
 
-    } else if (stage === 3 && currentStage === 3) {
+    } else if (stage === 3 && activeStage === 3) {
       setGameActive(false)
       setOpponents(prev =>
         prev.map(o => o.clientId === achieverId ? { ...o, status: 'won', stageCompleted: 3 } : o)
@@ -424,7 +447,7 @@ export default function BingoGame() {
           <div style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--color-text);">
             <h3 style="color: var(--color-gold); font-size: 1.2rem; font-weight: bold; margin-bottom: 8px;">${escapeHTML(achieverName)} BINGO!</h3>
             <p>Berhasil mencentang seluruh angka kartu <b>(Full House)</b>!</p>
-            ${isMultiplayerRef.current && !isHostRef.current ? '<div style="margin-top: 15px; padding: 8px; border: 1px dashed var(--color-gold-dim); color: var(--color-gold); font-size: 0.75rem; font-weight: bold; animation: pulse 2s infinite;">Menunggu Host memulai kembali...</div>' : ''}
+            ${multiFlag && !hostFlag ? '<div style="margin-top: 15px; padding: 8px; border: 1px dashed var(--color-gold-dim); color: var(--color-gold); font-size: 0.75rem; font-weight: bold; animation: pulse 2s infinite;">Menunggu Host memulai kembali...</div>' : ''}
           </div>
         `,
         icon: isMe ? 'success' : 'error',
@@ -438,7 +461,7 @@ export default function BingoGame() {
         allowOutsideClick: false,
         customClass: { popup: 'ornate-border classic-card' },
         didOpen: () => {
-          if (isMultiplayerRef.current && !isHostRef.current) {
+          if (multiFlag && !hostFlag) {
             const confirmBtn = Swal.getConfirmButton();
             if (confirmBtn) {
               confirmBtn.setAttribute('disabled', 'true');
@@ -449,8 +472,8 @@ export default function BingoGame() {
         }
       }).then((res) => {
         if (res.isConfirmed) {
-          if (isMultiplayerRef.current) {
-            if (isHostRef.current) startVersusGame()
+          if (multiFlag) {
+            if (hostFlag) startVersusGame()
           } else {
             startSoloGame()
           }
@@ -528,11 +551,13 @@ export default function BingoGame() {
           const lines = getCompletedLines(nextMarked)
           const isFullHouse = nextMarked.every(row => row.every(val => val))
 
-          if (currentStage === 1 && lines >= 1 && bot.stageCompleted < 1) {
+          const activeStage = currentStageRef.current
+
+          if (activeStage === 1 && lines >= 1 && bot.stageCompleted < 1) {
             triggerStageCompletion(1, bot.username, bot.clientId)
-          } else if (currentStage === 2 && lines >= 2 && bot.stageCompleted < 2) {
+          } else if (activeStage === 2 && lines >= 2 && bot.stageCompleted < 2) {
             triggerStageCompletion(2, bot.username, bot.clientId)
-          } else if (currentStage === 3 && isFullHouse && bot.stageCompleted < 3) {
+          } else if (activeStage === 3 && isFullHouse && bot.stageCompleted < 3) {
             triggerStageCompletion(3, bot.username, bot.clientId)
           }
         }, delay)
@@ -821,10 +846,12 @@ export default function BingoGame() {
       })
     }
     if (roomChannelRef.current) {
+      try { roomChannelRef.current.untrack() } catch (e) {}
       supabase.removeChannel(roomChannelRef.current)
       roomChannelRef.current = null
     }
     if (lobbyChannelRef.current) {
+      try { lobbyChannelRef.current.untrack() } catch (e) {}
       supabase.removeChannel(lobbyChannelRef.current)
       lobbyChannelRef.current = null
     }

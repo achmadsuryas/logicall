@@ -274,6 +274,8 @@ export default function SudokuGame() {
     versusStartedRef.current = versusStarted
   }, [versusStarted])
 
+  const gameEndedRef = useRef(false)
+
   // --- TOAST STATE ---
   const [toasts, setToasts] = useState<{ id: number; msg: string }[]>([])
   const toastId = useRef(0)
@@ -300,8 +302,14 @@ export default function SudokuGame() {
 
     return () => {
       clearIntervals()
-      if (roomChannelRef.current) supabase.removeChannel(roomChannelRef.current)
-      if (lobbyChannelRef.current) supabase.removeChannel(lobbyChannelRef.current)
+      if (roomChannelRef.current) {
+        try { roomChannelRef.current.untrack() } catch (e) {}
+        supabase.removeChannel(roomChannelRef.current)
+      }
+      if (lobbyChannelRef.current) {
+        try { lobbyChannelRef.current.untrack() } catch (e) {}
+        supabase.removeChannel(lobbyChannelRef.current)
+      }
     }
   }, []) // eslint-disable-line
 
@@ -548,6 +556,9 @@ export default function SudokuGame() {
   }
 
   const handleWin = (shouldBroadcast = true) => {
+    if (gameEndedRef.current) return
+    gameEndedRef.current = true
+
     pauseTimer()
     setIsGameActive(false)
     clearGameProgress()
@@ -617,6 +628,9 @@ export default function SudokuGame() {
   }
 
   const handleGameOver = (shouldBroadcast = true) => {
+    if (gameEndedRef.current) return
+    gameEndedRef.current = true
+
     pauseTimer()
     setIsGameActive(false)
     clearGameProgress()
@@ -674,6 +688,7 @@ export default function SudokuGame() {
 
   // --- START GAME SEQUENCE ---
   const triggerGameStartSequence = (puzzle: number[][], solution: number[][], diff: string, hints: number, hasCountdown = true) => {
+    gameEndedRef.current = false
     clearIntervals()
     setGridValues(puzzle.map(row => [...row]))
     setInitialValues(puzzle.map(row => [...row]))
@@ -714,6 +729,7 @@ export default function SudokuGame() {
 
   // --- NEW GAME GENERATION ---
   const initNewGame = (diff = 'medium', isMultiplayerGame = false) => {
+    gameEndedRef.current = false
     clearIntervals()
     setDifficulty(diff)
     setMistakesCount(0)
@@ -1081,10 +1097,12 @@ export default function SudokuGame() {
     }
 
     if (roomChannelRef.current) {
+      try { roomChannelRef.current.untrack() } catch (e) {}
       supabase.removeChannel(roomChannelRef.current)
       roomChannelRef.current = null
     }
     if (lobbyChannelRef.current) {
+      try { lobbyChannelRef.current.untrack() } catch (e) {}
       supabase.removeChannel(lobbyChannelRef.current)
       lobbyChannelRef.current = null
     }
