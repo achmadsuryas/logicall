@@ -71,6 +71,7 @@ export default function WordleGame() {
   const [isSharedToLobby, setIsSharedToLobby] = useState(false)
   const [showRoomInfo, setShowRoomInfo] = useState(false)
   const [shareLink, setShareLink] = useState('')
+  const [showOpponentBoard, setShowOpponentBoard] = useState(true)
 
   // --- COUNTDOWN STATE ---
   const [countdownActive, setCountdownActive] = useState(false)
@@ -1175,6 +1176,16 @@ export default function WordleGame() {
 
       {/* Main Boards Area */}
       <main className="flex-grow flex flex-col items-center justify-center p-4 max-w-4xl mx-auto w-full gap-6">
+        {isMultiplayer && (
+          <button
+            onClick={() => setShowOpponentBoard(!showOpponentBoard)}
+            className="brass-btn text-[9px] px-3 py-1.5"
+          >
+            <i className={showOpponentBoard ? "fa-solid fa-eye-slash" : "fa-solid fa-eye"} />{' '}
+            {showOpponentBoard ? 'Sembunyikan Papan Lawan' : 'Tampilkan Papan Lawan'}
+          </button>
+        )}
+
         <div className={`w-full flex flex-col md:flex-row gap-6 md:gap-12 items-center justify-center`}>
           {/* Own board */}
           <div className="flex flex-col gap-2">
@@ -1193,7 +1204,7 @@ export default function WordleGame() {
           </div>
 
           {/* Opponent board (visible in multiplayer) */}
-          {isMultiplayer && (
+          {isMultiplayer && showOpponentBoard && (
             <div className="flex flex-col gap-2">
               <span
                 className="text-[10px] font-bold uppercase tracking-wider text-center"

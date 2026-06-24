@@ -22,13 +22,19 @@
 /* ── BASE ─────────────────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
 
 body {
   background-color: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-serif);
   min-height: 100vh;
+  max-width: 100vw;
+  overflow-x: hidden;
   /* Subtle noise texture */
   background-image:
     radial-gradient(ellipse at 20% 50%, rgba(201,162,39,0.04) 0%, transparent 60%),
