@@ -677,6 +677,7 @@ export default function TypeRaceGame() {
             customClass: { popup: 'ornate-border classic-card' }
           }).then(() => {
             leaveVersusRoom()
+            router.push('/')
           })
           return
         }
@@ -1008,7 +1009,7 @@ export default function TypeRaceGame() {
                     className="flex-1 rounded px-2.5 py-1.5 text-xs font-bold focus:outline-none"
                     style={{ background: '#0a0804', border: '1px solid var(--color-border)', color: 'var(--color-ivory)', fontFamily: 'var(--font-mono)' }}
                   >
-                    {[2,3,4,6,8].map(n => <option key={n} value={n}>{n} Pemain</option>)}
+                    {[2,3,4,5,6,8].map(n => <option key={n} value={n}>{n} Pemain</option>)}
                   </select>
                   <button onClick={createVersusRoom} className="brass-btn px-3 py-1.5 text-[10px]">
                     <i className="fa-solid fa-users" /> Buat Room

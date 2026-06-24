@@ -441,7 +441,11 @@ export default function WordleGame() {
           setMyFinished(true)
           setGameActive(false)
           setIsAnimating(false)
-          endVersusMatch(true, currentRow, guess)
+          if (opponentFinishedRef.current) {
+            endVersusMatch(true, currentRow, guess)
+          } else {
+            showToast("Menunggu lawan selesai...")
+          }
         } else {
           handleWin()
         }
@@ -450,7 +454,11 @@ export default function WordleGame() {
           setMyFinished(true)
           setGameActive(false)
           setIsAnimating(false)
-          endVersusMatch(false, currentRow, guess)
+          if (opponentFinishedRef.current) {
+            endVersusMatch(false, currentRow, guess)
+          } else {
+            showToast("Menunggu lawan selesai...")
+          }
         } else {
           handleLoss()
         }
@@ -1244,6 +1252,13 @@ export default function WordleGame() {
             <i className={showOpponentBoard ? "fa-solid fa-eye-slash" : "fa-solid fa-eye"} />{' '}
             {showOpponentBoard ? 'Sembunyikan Papan Lawan' : 'Tampilkan Papan Lawan'}
           </button>
+        )}
+
+        {isMultiplayer && myFinished && !opponentFinished && (
+          <div className="text-[10px] font-bold uppercase tracking-widest text-[var(--color-gold)] font-mono animate-pulse bg-[rgba(201,162,39,0.05)] border border-[var(--color-gold-dim)] rounded px-4 py-2.5 max-w-sm text-center">
+            <i className="fa-solid fa-hourglass-half mr-2" style={{ color: 'var(--color-gold)' }} />
+            Menunggu lawan selesai bermain...
+          </div>
         )}
 
         <div className={`w-full flex flex-col md:flex-row gap-6 md:gap-12 items-center justify-center`}>

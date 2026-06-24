@@ -50,6 +50,10 @@ export default function MultiplayerLobby({
   const [startClicked, setStartClicked] = useState(false)
 
   useEffect(() => {
+    setMaxSelect(String(maxPlayers))
+  }, [maxPlayers])
+
+  useEffect(() => {
     setStartClicked(false)
   }, [players.length, showRoomInfo])
 
@@ -114,7 +118,7 @@ export default function MultiplayerLobby({
                         fontFamily: 'var(--font-mono)',
                       }}
                     >
-                      {[2,3,4,6,8].map(n => <option key={n} value={n}>{n} Pemain</option>)}
+                      {[2,3,4,5,6,8].map(n => <option key={n} value={n}>{n} Pemain</option>)}
                     </select>
                   )}
                   <button onClick={handleCreateRoom} className="brass-btn px-3 py-1.5 text-[10px]">
