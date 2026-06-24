@@ -420,12 +420,22 @@ export default function BingoGame() {
         background: 'var(--color-bg-card)',
         color: 'var(--color-text)',
         showCancelButton: true,
-        showConfirmButton: !isMultiplayer || isHost,
+        showConfirmButton: true,
         confirmButtonText: 'Main Lagi',
         cancelButtonText: 'Menu Utama',
         reverseButtons: true,
         allowOutsideClick: false,
-        customClass: { popup: 'ornate-border classic-card' }
+        customClass: { popup: 'ornate-border classic-card' },
+        didOpen: () => {
+          if (isMultiplayer && !isHost) {
+            const confirmBtn = Swal.getConfirmButton();
+            if (confirmBtn) {
+              confirmBtn.setAttribute('disabled', 'true');
+              confirmBtn.style.opacity = '0.5';
+              confirmBtn.style.cursor = 'not-allowed';
+            }
+          }
+        }
       }).then((res) => {
         if (res.isConfirmed) {
           if (isMultiplayer) {

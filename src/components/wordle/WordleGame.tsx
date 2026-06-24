@@ -565,13 +565,23 @@ export default function WordleGame() {
         background: 'var(--color-bg-card)',
         color: 'var(--color-text)',
         showCancelButton: true,
-        showConfirmButton: hostFlag,
+        showConfirmButton: true,
         confirmButtonText: 'Main Lagi',
         cancelButtonText: 'Menu Utama',
         allowOutsideClick: false,
         customClass: {
           popup: 'ornate-border classic-card',
           title: 'text-lg font-bold uppercase tracking-wider',
+        },
+        didOpen: () => {
+          if (!hostFlag) {
+            const confirmBtn = Swal.getConfirmButton();
+            if (confirmBtn) {
+              confirmBtn.setAttribute('disabled', 'true');
+              confirmBtn.style.opacity = '0.5';
+              confirmBtn.style.cursor = 'not-allowed';
+            }
+          }
         }
       }).then((res) => {
         if (res.isConfirmed) {
