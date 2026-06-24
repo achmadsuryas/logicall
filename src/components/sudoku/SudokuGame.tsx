@@ -254,6 +254,26 @@ export default function SudokuGame() {
     solutionValuesRef.current = solutionValues
   }, [solutionValues])
 
+  const isHostRef = useRef(false)
+  useEffect(() => {
+    isHostRef.current = isHost
+  }, [isHost])
+
+  const isMultiplayerRef = useRef(false)
+  useEffect(() => {
+    isMultiplayerRef.current = isMultiplayer
+  }, [isMultiplayer])
+
+  const difficultyRef = useRef('easy')
+  useEffect(() => {
+    difficultyRef.current = difficulty
+  }, [difficulty])
+
+  const versusStartedRef = useRef(false)
+  useEffect(() => {
+    versusStartedRef.current = versusStarted
+  }, [versusStarted])
+
   // --- TOAST STATE ---
   const [toasts, setToasts] = useState<{ id: number; msg: string }[]>([])
   const toastId = useRef(0)
@@ -532,7 +552,7 @@ export default function SudokuGame() {
     setIsGameActive(false)
     clearGameProgress()
 
-    const bestKey = `logicall_sudoku_best_${difficulty}`
+    const bestKey = `logicall_sudoku_best_${difficultyRef.current}`
     const bestRecord = localStorage.getItem(bestKey)
     let isNewRecord = false
     if (!bestRecord || secondsElapsed < parseInt(bestRecord)) {
@@ -549,8 +569,8 @@ export default function SudokuGame() {
             Waktu: <strong style="color: var(--color-gold); font-size: 1.2rem;">${formatTime(secondsElapsed)}</strong>
             ${isNewRecord ? '<br/><span style="color:#4ade80; font-size:0.7rem; font-weight:bold;">REKOR BARU!</span>' : ''}
           </div>
-          <p style="font-size:0.7rem; color: var(--color-text-muted);">Tingkat Kesulitan: ${difficulty.toUpperCase()}</p>
-          ${isMultiplayer && !isHost ? '<div style="margin-top: 15px; padding: 8px; border: 1px dashed var(--color-gold-dim); color: var(--color-gold); font-size: 0.75rem; font-weight: bold; animation: pulse 2s infinite;">Menunggu Host memulai kembali...</div>' : ''}
+          <p style="font-size:0.7rem; color: var(--color-text-muted);">Tingkat Kesulitan: ${difficultyRef.current.toUpperCase()}</p>
+          ${isMultiplayerRef.current && !isHostRef.current ? '<div style="margin-top: 15px; padding: 8px; border: 1px dashed var(--color-gold-dim); color: var(--color-gold); font-size: 0.75rem; font-weight: bold; animation: pulse 2s infinite;">Menunggu Host memulai kembali...</div>' : ''}
         </div>
       `,
       background: 'var(--color-bg-card)',
@@ -565,7 +585,7 @@ export default function SudokuGame() {
         title: 'text-lg font-bold tracking-widest',
       },
       didOpen: () => {
-        if (isMultiplayer && !isHost) {
+        if (isMultiplayerRef.current && !isHostRef.current) {
           const confirmBtn = Swal.getConfirmButton();
           if (confirmBtn) {
             confirmBtn.setAttribute('disabled', 'true');
@@ -576,10 +596,10 @@ export default function SudokuGame() {
       }
     }).then((res) => {
       if (res.isConfirmed) {
-        if (isMultiplayer) {
-          if (isHost) startVersusGame()
+        if (isMultiplayerRef.current) {
+          if (isHostRef.current) startVersusGame()
         } else {
-          initNewGame(difficulty, false)
+          initNewGame(difficultyRef.current, false)
         }
       } else if (res.dismiss === Swal.DismissReason.cancel) {
         leaveVersusRoom()
@@ -587,7 +607,7 @@ export default function SudokuGame() {
       }
     })
 
-    if (isMultiplayer && roomChannelRef.current) {
+    if (isMultiplayerRef.current && roomChannelRef.current) {
       roomChannelRef.current.send({
         type: 'broadcast',
         event: 'game-event',
@@ -606,7 +626,7 @@ export default function SudokuGame() {
       html: `
         <div style="font-family: var(--font-mono); font-size: 0.8rem; text-align: center; color: var(--color-text);">
           <p>Anda melakukan 3 kesalahan. Papan gagal diselesaikan.</p>
-          ${isMultiplayer && !isHost ? '<div style="margin-top: 15px; padding: 8px; border: 1px dashed var(--color-gold-dim); color: var(--color-gold); font-size: 0.75rem; font-weight: bold; animation: pulse 2s infinite;">Menunggu Host memulai kembali...</div>' : ''}
+          ${isMultiplayerRef.current && !isHostRef.current ? '<div style="margin-top: 15px; padding: 8px; border: 1px dashed var(--color-gold-dim); color: var(--color-gold); font-size: 0.75rem; font-weight: bold; animation: pulse 2s infinite;">Menunggu Host memulai kembali...</div>' : ''}
         </div>
       `,
       background: 'var(--color-bg-card)',
@@ -621,7 +641,7 @@ export default function SudokuGame() {
         title: 'text-lg font-bold tracking-widest text-rose-500',
       },
       didOpen: () => {
-        if (isMultiplayer && !isHost) {
+        if (isMultiplayerRef.current && !isHostRef.current) {
           const confirmBtn = Swal.getConfirmButton();
           if (confirmBtn) {
             confirmBtn.setAttribute('disabled', 'true');
@@ -632,10 +652,10 @@ export default function SudokuGame() {
       }
     }).then((res) => {
       if (res.isConfirmed) {
-        if (isMultiplayer) {
-          if (isHost) startVersusGame()
+        if (isMultiplayerRef.current) {
+          if (isHostRef.current) startVersusGame()
         } else {
-          initNewGame(difficulty, false)
+          initNewGame(difficultyRef.current, false)
         }
       } else if (res.dismiss === Swal.DismissReason.cancel) {
         leaveVersusRoom()
@@ -643,7 +663,7 @@ export default function SudokuGame() {
       }
     })
 
-    if (isMultiplayer && roomChannelRef.current) {
+    if (isMultiplayerRef.current && roomChannelRef.current) {
       roomChannelRef.current.send({
         type: 'broadcast',
         event: 'game-event',
@@ -989,7 +1009,7 @@ export default function SudokuGame() {
         break
 
       case 'request-new-game':
-        if (isHost) {
+        if (isHostRef.current) {
           startVersusGame()
         }
         break
@@ -1109,15 +1129,15 @@ export default function SudokuGame() {
   }
 
   const startVersusGame = async () => {
-    if (!isHost || !roomChannelRef.current) return
+    if (!isHostRef.current || !roomChannelRef.current) return
 
     setIsStartingGame(true)
-    const { puzzle, solution } = generateSudokuBoard(difficulty)
+    const { puzzle, solution } = generateSudokuBoard(difficultyRef.current)
 
     let hints = 6
-    if (difficulty === 'easy') hints = 8
-    else if (difficulty === 'medium') hints = 6
-    else if (difficulty === 'hard') hints = 4
+    if (difficultyRef.current === 'easy') hints = 8
+    else if (difficultyRef.current === 'medium') hints = 6
+    else if (difficultyRef.current === 'hard') hints = 4
     else hints = 3
 
     roomChannelRef.current.send({
@@ -1128,13 +1148,13 @@ export default function SudokuGame() {
         gridValues: puzzle,
         initialValues: puzzle,
         solutionValues: solution,
-        gameDifficulty: difficulty,
+        gameDifficulty: difficultyRef.current,
         hintsRemaining: hints
       }
     })
 
     Swal.close() // Close any active popups
-    triggerGameStartSequence(puzzle, solution, difficulty, hints)
+    triggerGameStartSequence(puzzle, solution, difficultyRef.current, hints)
     setIsStartingGame(false)
   }
 

@@ -66,6 +66,16 @@ export default function BingoGame() {
   const lobbyChannelRef = useRef<ReturnType<typeof supabase.channel> | null>(null)
   const autoDrawIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
+  const isHostRef = useRef(false)
+  useEffect(() => {
+    isHostRef.current = isHost
+  }, [isHost])
+
+  const isMultiplayerRef = useRef(false)
+  useEffect(() => {
+    isMultiplayerRef.current = isMultiplayer
+  }, [isMultiplayer])
+
   // --- TOAST STATE ---
   const [toasts, setToasts] = useState<{ id: number; msg: string }[]>([])
   const toastId = useRef(0)
@@ -414,7 +424,7 @@ export default function BingoGame() {
           <div style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--color-text);">
             <h3 style="color: var(--color-gold); font-size: 1.2rem; font-weight: bold; margin-bottom: 8px;">${escapeHTML(achieverName)} BINGO!</h3>
             <p>Berhasil mencentang seluruh angka kartu <b>(Full House)</b>!</p>
-            ${isMultiplayer && !isHost ? '<div style="margin-top: 15px; padding: 8px; border: 1px dashed var(--color-gold-dim); color: var(--color-gold); font-size: 0.75rem; font-weight: bold; animation: pulse 2s infinite;">Menunggu Host memulai kembali...</div>' : ''}
+            ${isMultiplayerRef.current && !isHostRef.current ? '<div style="margin-top: 15px; padding: 8px; border: 1px dashed var(--color-gold-dim); color: var(--color-gold); font-size: 0.75rem; font-weight: bold; animation: pulse 2s infinite;">Menunggu Host memulai kembali...</div>' : ''}
           </div>
         `,
         icon: isMe ? 'success' : 'error',
@@ -428,7 +438,7 @@ export default function BingoGame() {
         allowOutsideClick: false,
         customClass: { popup: 'ornate-border classic-card' },
         didOpen: () => {
-          if (isMultiplayer && !isHost) {
+          if (isMultiplayerRef.current && !isHostRef.current) {
             const confirmBtn = Swal.getConfirmButton();
             if (confirmBtn) {
               confirmBtn.setAttribute('disabled', 'true');
@@ -439,8 +449,8 @@ export default function BingoGame() {
         }
       }).then((res) => {
         if (res.isConfirmed) {
-          if (isMultiplayer) {
-            if (isHost) startVersusGame()
+          if (isMultiplayerRef.current) {
+            if (isHostRef.current) startVersusGame()
           } else {
             startSoloGame()
           }
@@ -870,7 +880,7 @@ export default function BingoGame() {
   }
 
   const startVersusGame = async () => {
-    if (!isHost || players.length < 2 || !roomChannelRef.current) {
+    if (!isHostRef.current || players.length < 2 || !roomChannelRef.current) {
       showToast("Butuh minimal 2 pemain!")
       return
     }
